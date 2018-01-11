@@ -1,10 +1,10 @@
 //ZONA SEGURA, PUEDEN JUGAR AQUI
 var domain = "gestios.es"
-var time_check = 8000
-var time_pizzas = 60000
 
 
 //SI NO ENTIENDES NI PAPA, ATRAS!!!!!
+var time_check = 10000 //No lo bajes o quedas ban
+var time_pizzas = 60000 //Tampoco lo bajes
 var timeout_telewin = 0;
 var timeout_telequeda = 0;
 
@@ -103,7 +103,7 @@ function telequeda() {
             success: function(e) {
                 busy_telequeda = false;
                 timeout_telequeda = setTimeout(function(){telequeda()}, time_pizzas);
-                
+
                 var t = JSON.parse(e);
                 prizesEnable = JSON.stringify(t.prizesEnable), console.log("[INFO] Quedan " + prizesEnable + " Pizzas")
             }, 
