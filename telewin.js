@@ -1,86 +1,120 @@
 //ZONA SEGURA, PUEDEN JUGAR AQUI
-
-var time = 10000; //Tiempo en ms. No se aconseja menos si no quieres comerte un ban
-var domain = "gestios.es"; //Puedes cambiarlo por gmail, hotmail.. o mejor dejarlo como esta
+var domain = "gestios.es"
+var time_check = 8000
+var time_pizzas = 60000
 
 
 //SI NO ENTIENDES NI PAPA, ATRAS!!!!!
-function telewin() {
-    var e = {
-            email: function() {
-                function e() {
-                    return Math.floor(65536 * (1 + Math.random())).toString(16).substring(1)
-                }
-                if(domain=="gmail.com"){
-                    var sep="0";
-					return e() + e() + sep + e() + e() + sep + e() + e()
-                }else{
-                    var sep = "-";
-                    return e() + sep + e() + e() + e()
-					//return e() + e() + sep + e() + sep + e() + sep + e() + sep + e() + e() + e()
-                }
-                
-            }() + "@"+domain,
-            receive_offert: !1
-        },
-        t = !1;
-    t || (t = !0, $.ajax({
+var timeout_telewin = 0;
+var timeout_telequeda = 0;
+
+function telewin(){
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        }
+
+        if(domain=="gmail.com"){
+            var sep = 0;
+            return s4() + sep + s4() + sep + s4() + s4() + s4();
+        }else{
+            var sep = "-";
+            return s4() + sep + s4() + s4() + s4();
+        }
+        
+    }
+
+
+    var data ={
+        email: guid()+"@"+domain, 
+        receive_offert: false,
+    }
+
+    $.ajax({
         type: "POST",
         url: "https://d6ow8diqzony0.cloudfront.net/check-mail",
-        dataType: "json",
+        dataType: 'json',
         contentType: "application/json",
-        crossDomain: !0,
-        data: JSON.stringify(e),
-        success: function(s) {
-            if (!(t = !1)) {
-                var a = JSON.stringify(JSON.parse(s.body)),
-                    n = JSON.parse(a);
-                if (!t) switch (n.responseMessage) {
-                    case "EMAIL_SAVED":
+        crossDomain : true,
+        data: JSON.stringify(data), 
+        success: function (result) {
+            busy = false;
+
+            if(!busy){
+                var body = JSON.stringify(JSON.parse(result['body'])  );
+                var response = JSON.parse(body);
+
+                if(!busy){
+                    switch(response.responseMessage) {
+
+                        case 'EMAIL_SAVED':
                         $.ajax({
                             type: "POST",
                             url: "https://d6ow8diqzony0.cloudfront.net/check-prize",
-                            dataType: "json",
+                            dataType: 'json',
                             contentType: "application/json",
-                            crossDomain: !0,
-                            data: JSON.stringify({
-                                email: e.email
-                            }),
-                            success: function(s) {
-                                t = !1, timeOutId = setTimeout(telewin, time);
-                                var a = JSON.stringify(JSON.parse(s.body));
-                                switch (JSON.parse(a).responseMessage) {
-                                    case "USER_IS_WINNER":
-                                        console.warn("[GANADOR]" + e.email);
-                                        break;
-                                    case "USER_NOT_WIN":
-                                        console.log("[NO GANADOR]" + e.email)
+                            crossDomain : true,
+                            data: JSON.stringify({email: data.email}), 
+                            success: function (result) {
+                                busy = false;
+
+                                var body = JSON.stringify(JSON.parse(result['body']));
+                                var response = JSON.parse(body); 
+
+                                switch(response.responseMessage) {
+                                    case 'USER_IS_WINNER':
+                                    console.log("[GANADOR]" + data.email)
+                                    break;
+                                    case 'USER_NOT_WIN':
+                                    console.log("[NO GANADOR]" + data.email)
+                                    break;
                                 }
-                            },
-                            error: function(e) {
-                                t = !1, console.log("ERROR: " + e.message)
-                            }
-                        })
+
+                                timeout = setTimeout(function(){telewin()}, time_check);
+                            },  
+                            error: function (e) {
+                                timeout = setTimeout(function(){telewin()}, time_check);
+                                console.log("ERROR: "+ e.message);
+                            } 
+                        });
+                        break;  
+                    }
+                    
                 }
             }
-        },
-        error: function(e) {
-            t = !1, console.log("ERROR: " + e.message)
-        }
-    }))
+        }, 
+        error: function (e) {
+            console.log("ERROR: "+ e.message);
+        } 
+    }); 
+    
 }
 
+var pizzas = 1000;
+var busy_telequeda = false;
+var timing = 44000
 function telequeda() {
-    $.ajax({
-        url: "./data.json",
-        dataType: "text",
-        success: function(e) {
-            timeOutId2 = setTimeout(telequeda, 6e4);
-            var t = JSON.parse(e);
-            prizesEnable = JSON.stringify(t.prizesEnable), console.log("[INFO] Quedan " + prizesEnable + " Pizzas")
-        }
-    })
+    if(!busy_telequeda){
+        busy_telequeda = true;
+        $.ajax({
+            url: "./data.json",
+            dataType: "text",
+            success: function(e) {
+                busy_telequeda = false;
+                timeout_telequeda = setTimeout(function(){telequeda()}, time_pizzas);
+                
+                var t = JSON.parse(e);
+                prizesEnable = JSON.stringify(t.prizesEnable), console.log("[INFO] Quedan " + prizesEnable + " Pizzas")
+            }, 
+            error: function (e) {
+                busy_telequeda = false;
+                timeout_telequeda = setTimeout(function(){telequeda()}, time_pizzas);
+                console.log("ERROR: "+ e.message);
+            } 
+        })
+    }
 }
-var timeOutId = 0,
-    timeOutId2 = 0;
-telewin(), telequeda(), timeOutId = setTimeout(telewin, time), timeOutId2 = setTimeout(telequeda, 6e4);
+
+timeout_telewin = setTimeout(function(){telewin()}, time_check);
+timeout_telequeda = setTimeout(function(){telequeda()}, time_pizzas);
