@@ -1,7 +1,7 @@
 //ZONA SEGURA, PUEDEN JUGAR AQUI
 
 var time = 10000; //Tiempo en ms. No se aconseja menos si no quieres comerte un ban
-var domain = "empre.site"; //Puedes cambiarlo por gmail, hotmail.. o mejor dejarlo como esta
+var domain = "gestios.es"; //Puedes cambiarlo por gmail, hotmail.. o mejor dejarlo como esta
 
 
 //SI NO ENTIENDES NI PAPA, ATRAS!!!!!

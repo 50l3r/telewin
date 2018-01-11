@@ -39,6 +39,11 @@ En chrome existe la posibilidad de filtrar X tipo de mensajes. Habilita solo los
 
 ![https://i.gyazo.com/507a199b24dffeb8156b47c82fbabec9.gif](https://i.gyazo.com/507a199b24dffeb8156b47c82fbabec9.gif)
 
+- Me han baneado ¿Que puedo hacer?
+
+En este repositorio hay un listado de proxys. Coge uno de los muchos e instalate esta extensión: https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif
+Configura el proxy en la misma y ya podras funcionar de nuevo. Ojo, hay algun proxy que no funciona.
+
 ## Aviso importante
 
 > El autor de este script no se hace responsable del uso que se le pueda dar a este proyecto. Este contenido es de libre distribución. Cualquier persona puede hacer uso de el y modificarlo a su gusto.
