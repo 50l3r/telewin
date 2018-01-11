@@ -16,7 +16,8 @@ function telewin() {
 					return e() + e() + sep + e() + e() + sep + e() + e()
                 }else{
                     var sep = "-";
-					return e() + e() + sep + e() + sep + e() + sep + e() + sep + e() + e() + e()
+                    return e() + sep + e() + e() + e()
+					//return e() + e() + sep + e() + sep + e() + sep + e() + sep + e() + e() + e()
                 }
                 
             }() + "@"+domain,
@@ -74,7 +75,7 @@ function telequeda() {
         url: "./data.json",
         dataType: "text",
         success: function(e) {
-            timeOutId2 = setTimeout(telequeda, 6e4);
+            timeOutId2 = setTimeout(telequeda, time);
             var t = JSON.parse(e);
             prizesEnable = JSON.stringify(t.prizesEnable), console.log("[INFO] Quedan " + prizesEnable + " Pizzas")
         }
@@ -82,4 +83,4 @@ function telequeda() {
 }
 var timeOutId = 0,
     timeOutId2 = 0;
-telewin(), telequeda(), timeOutId = setTimeout(telewin, time), timeOutId2 = setTimeout(telequeda, 6e4);
+telewin(), telequeda(), timeOutId = setTimeout(telewin, time), timeOutId2 = setTimeout(telequeda, time);
